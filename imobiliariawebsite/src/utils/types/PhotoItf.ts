@@ -5,5 +5,6 @@ export interface PhotoItf {
     description: string
     imovelId: number
     url: string
+    isPrimary: boolean
     imovel: ImovelItf
 }

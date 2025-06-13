@@ -1,4 +1,3 @@
-import { CorretorItf } from "./CorretorItf";
 import { PhotoItf } from "./PhotoItf";
 import { UserItf } from "./UserItf";
 
@@ -10,13 +9,12 @@ export interface ImovelItf {
     description: string;
     address: string;
     type: string;
-    photo: string;
+    priceType: string;
     price: number;
     bedRooms: number;
     bathRooms: number;
+    parkinSpace: number;
     size: number;
 
     photos: PhotoItf[]
-
-    corretores: CorretorItf;
 }

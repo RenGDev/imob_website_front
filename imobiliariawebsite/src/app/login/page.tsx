@@ -1,5 +1,5 @@
 'use client'
-import { useUserStore } from "@/context/UserContext"
+import { useAuthStore } from "@/context/UserContext"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -12,7 +12,7 @@ import { toast } from "sonner"
     
 export default function Login() {
     const { register, handleSubmit } = useForm<Inputs>()    
-    const { signInUser } = useUserStore()
+    const { signIn } = useAuthStore()
 
     const router = useRouter()
 
@@ -29,16 +29,18 @@ export default function Login() {
         // console.log(response)
         if (response.status == 200) {
             // toast.success("Ok!")            
-            const dados = await response.json()
+            const {user, token} = await response.json()
 
 
             // "coloca" os dados do cliente no contexto
-            signInUser(dados)
+            signIn(user, token)
+
+            console.log(user)
             
             // se o cliente indicou que quer se manter conectado
             // salvamos os dados (id) dele em localStorage
             if (data.manter) {
-                localStorage.setItem("clienteKey", dados.id)
+                localStorage.setItem("clienteKey", user.id)
             } else {
                 // se indicou que não quer permanecer logado e tem
                 // uma chave (anteriormente) salva, remove-a
@@ -55,13 +57,13 @@ export default function Login() {
     }
     return(
         <main className="flex">
-            <section className="flex flex-col items-center bg-amber-400 h-dvh w-3/5">
+            <section className="flex flex-col items-center bg-amber-300 h-dvh w-3/5">
                 <h1 className="mt-56 text-7xl text-white">Bem vindo!</h1>
                 <h2 className="text-2xl mt-3 text-gray-100">Venha escolher os melhores imoveis da sua região</h2>
             </section>
 
             <section className="flex flex-col justify-center h-dvh w-2/5">
-                <h1 className="mx-auto text-5xl text-amber-400 font-bold">Login</h1>
+                <h1 className="mx-auto text-5xl text-amber-300 font-bold">Login</h1>
                 <form className="px-28 py-10 flex flex-col gap-8" onSubmit={handleSubmit(verificaLogin)}>
                     <div className="flex flex-col">
                         <label htmlFor="email">E-mail</label>
@@ -91,13 +93,13 @@ export default function Login() {
                                     <label htmlFor="remember" className="text-black dark:text-black">Manter Conectado</label>
                                 </div>
                             </div>
-                            <a href="#" className="text-sm font-medium text-black hover:underline dark:text-black">Esqueceu sua senha?</a>
+                            <a href="/password-recovery" className="text-sm font-medium text-black hover:underline dark:text-black">Esqueceu sua senha?</a>
                     </div>
                     <button type="submit" className="w-full text-white focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-amber-600 hover:bg-amber-700 dark:focus:ring-blue-800">
                         Entrar
                     </button>
                     <p className="text-sm font-light text-black">
-                        Ainda não possui conta? <a href="#" className="font-medium text-black-600 hover:underline">Cadastre-se</a>
+                        Ainda não possui conta? <a href="/register" className="font-medium text-black-600 hover:underline">Cadastre-se</a>
                     </p>
                 </form>
             </section>

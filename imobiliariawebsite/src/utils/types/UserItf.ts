@@ -9,4 +9,6 @@ export interface UserItf {
     phone: string;
     email: string;
     password: string;
+
+    token: string;
 }
