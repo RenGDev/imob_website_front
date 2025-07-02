@@ -56,7 +56,7 @@ export function InputPesquisa({ setImoveis }: InputPesquisaProps) {
                             }}}
                     />
                     <button type="button"
-                        className="cursor-pointer text-white absolute end-14 md:end-13 bottom-2.5 bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-orange-400 dark:hover:bg-orange-500"
+                        className="cursor-pointer text-white absolute end-14 md:end-13 bottom-2.5 bg-amber-400 hover:bg-amber-500 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2"
                         onClick={mostraDestaques}>
                         Todos
                     </button>

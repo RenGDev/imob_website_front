@@ -36,7 +36,7 @@ export default function AllCardImovel({ data } : { data : ImovelItf }){
 
      const primaryPhoto = data.photos.find(photo => photo.isPrimary);
     return( 
-        <a href="#" className="flex flex-col gap-6 h-72 items-center overflow-hidden bg-white border border-gray-200 rounded-l-lg shadow-sm md:w-4xl md:flex-row  hover:bg-gray-100 ">
+        <div className="flex flex-col gap-6 h-72 items-center overflow-hidden bg-white border border-gray-200 rounded-l-lg shadow-sm md:w-4xl md:flex-row">
             <img className="object-fill rounded-t-lg w-full h-96 md:h-full md:w-1/4 md:rounded-none md:rounded-s-lg" src={primaryPhoto ? primaryPhoto.url : "/no_image.jpg"} alt="" />
             <div className="flex flex-col gap-5 mt-12 h-full w-9/12 leading-normal">
               	<div className="flex flex-col">
@@ -46,9 +46,9 @@ export default function AllCardImovel({ data } : { data : ImovelItf }){
 				<div className="flex gap-5">
 					<span className="mb-3 flex gap-10 font-normal text-amber-400">{data.type}</span>
 					{mediaRating !== null && (
-                          <h1 className="font-bold text-amber-400">
-                            {mediaRating.toFixed(1)} ★
-                          </h1>
+                        <h1 className="font-bold text-amber-400">
+                          {mediaRating.toFixed(1)} ★
+                        </h1>
                     )}
 				</div>
 			  	
@@ -77,6 +77,6 @@ export default function AllCardImovel({ data } : { data : ImovelItf }){
                 	</Link>
 				</div>
             </div>
-        </a>
+        </div>
     )
 }

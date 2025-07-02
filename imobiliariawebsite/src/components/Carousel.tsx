@@ -7,7 +7,6 @@ export function Carousel({ imovel }: { imovel: ImovelItf }) {
 	const [selectedPhoto, setSelectedPhoto] = useState(imovel.photos.find(photo => photo.isPrimary) || imovel.photos[0]);
 
 	useEffect(() => {
-			// Força o Flowbite a reprocessar os elementos com os data-attributes
 			setSelectedPhoto(imovel.photos.find(photo => photo.isPrimary) || imovel.photos[0])
 			setTimeout(() => {
 				if (typeof window !== 'undefined') {

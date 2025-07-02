@@ -33,13 +33,12 @@ export default function Register() {
 
   return (
     <main className="flex flex-col md:flex-row min-h-screen">
-      {/* Lado esquerdo (imagem / boas-vindas) */}
+      
       <section className="flex flex-col items-center justify-center bg-amber-300 w-full md:w-1/2 py-20 px-6 text-center">
         <h1 className="text-5xl md:text-6xl text-white font-bold">Bem-vindo!</h1>
         <h2 className="text-lg md:text-2xl mt-4 text-white">Escolha os melhores imóveis da sua região</h2>
       </section>
 
-      {/* Formulário */}
       <section className="flex flex-col items-center justify-center w-full md:w-1/2 py-10 px-6">
         <h1 className="text-3xl md:text-5xl text-amber-300 font-bold mb-6">Registre-se</h1>
         <form

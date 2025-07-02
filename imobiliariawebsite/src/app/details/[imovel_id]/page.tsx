@@ -83,9 +83,10 @@ export default function Detalhes() {
       <section className="mt-10 w-full px-20">
 
         {imoveis?.photos &&
-          <>
+          <div className="flex flex-col gap-2">
             <Carousel key={imoveis.id} imovel={imoveis}/>
-          </>
+            <button className="border-2 border-solid flex justify-center cursor-pointer border-black w-3 py-3 px-7 text-2xl">+</button>
+          </div>
         }
       
       </section>

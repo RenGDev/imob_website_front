@@ -5,6 +5,7 @@ export interface ImovelItf {
     id: number
 
     users: UserItf[];
+    user: UserItf;
 
     description: string;
     address: string;

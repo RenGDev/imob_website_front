@@ -53,7 +53,7 @@ function Header(){
 							<ul className="flex flex-col font-medium items-center p-4 md:p-0 mt-4 border border-gray-100 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0">
 								<li><a href="/todos" className="block py-2 px-3 text-purple-500 hover:text-purple-600 md:p-0">Imoveis</a></li>
 								<hr className='w-px h-5 bg-white opacity-70 border-0'/>
-								<li><a href="#" className="block py-2 px-3 text-purple-500 hover:text-purple-600 md:p-0">Anunciar</a></li>
+								<li><Link href="/register-imovel" className="block py-2 px-3 text-purple-500 hover:text-purple-600 md:p-0">Anunciar</Link></li>
 							</ul>
 						</div>
 
@@ -80,6 +80,9 @@ function Header(){
                 		    	    	    </div>
                 		    	    	    <hr className='border-gray-500'/>
                 		    	    	    <ul className='flex flex-col gap-3 px-5 pb-5'>
+												{user.role == "ADMIN" &&
+													<li><a href="/admin/estatisticas" className="hover:text-blue-500">Estatisticas</a></li>
+												}
                 		    	    	        <li><a href="#" className="hover:text-blue-500">Meus imoveis</a></li>
 												<li><a href="/propostas" className="hover:text-blue-500">Minhas propostas</a></li>
                 		    	    	        <li><a href="#" className="hover:text-blue-500">Configurações</a></li>
