@@ -3,7 +3,7 @@ import { useAuthStore } from "@/context/UserContext"
 import { PropostaItf } from "@/utils/types/PropostasItf"
 import { useEffect, useState } from "react"
 
-export default function propostas(){
+export default function Propostas(){
 
     const [propostas, setPropostas] = useState<PropostaItf[]>([])
     const { user, token } = useAuthStore()
