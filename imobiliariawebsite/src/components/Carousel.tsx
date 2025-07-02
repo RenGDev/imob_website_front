@@ -31,11 +31,11 @@ export function Carousel({ imovel }: { imovel: ImovelItf }) {
 
 			
 	return (
-			<div className="flex gap-4">
+			<div className="flex flex-col gap-4 md:flex-row">
 					<div>
 						<img className="h-96 max-w-full rounded-lg" src={selectedPhoto?.url || "/no_image.jpg"} alt={selectedPhoto?.description || "Imagem"} />
 					</div>
-					<div className="grid grid-cols-1 grid-rows-3 gap-4">
+					<div className="grid grid-cols-3 md:grid-cols-1 md:grid-rows-3 gap-4">
 						{listaFotos}
 					</div>
 			</div>

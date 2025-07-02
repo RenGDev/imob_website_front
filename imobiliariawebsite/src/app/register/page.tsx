@@ -34,7 +34,7 @@ export default function Register() {
   return (
     <main className="flex flex-col md:flex-row min-h-screen">
       
-      <section className="flex flex-col items-center justify-center bg-amber-300 w-full md:w-1/2 py-20 px-6 text-center">
+      <section className="md:flex md:flex-col hidden items-center justify-center bg-amber-300 w-full md:w-1/2 py-20 px-6 text-center">
         <h1 className="text-5xl md:text-6xl text-white font-bold">Bem-vindo!</h1>
         <h2 className="text-lg md:text-2xl mt-4 text-white">Escolha os melhores imóveis da sua região</h2>
       </section>
@@ -45,7 +45,7 @@ export default function Register() {
           onSubmit={handleSubmit(registrar)}
           className="w-full max-w-xl mt-3 flex flex-col gap-6"
         >
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col md:flex-row gap-4 m-auto md:m-0">
             <div className="flex flex-col w-full">
               <label htmlFor="name">Nome Completo</label>
               <input className="rounded-md px-3 w-64 py-2 border" type="text" id="name" required {...register("name")} />
@@ -56,7 +56,7 @@ export default function Register() {
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col md:flex-row gap-4 m-auto md:m-0">
             <div className="flex flex-col w-full">
               <label htmlFor="tel">Telefone</label>
               <input className="rounded-md px-3 w-64 py-2 border" type="tel" id="tel" required {...register("phone")} />
@@ -67,14 +67,14 @@ export default function Register() {
             </div>
           </div>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col m-auto md:m-0">
             <label htmlFor="password">Senha</label>
             <input className="rounded-md mb-14 w-64 px-3 py-2 border" type="password" id="password" required {...register("password")} />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+            className="md:w-full w-3/4 m-auto md:m-0 bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center"
           >
             Registrar
           </button>

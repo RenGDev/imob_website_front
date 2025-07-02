@@ -57,12 +57,12 @@ export default function Login() {
     }
     return(
         <main className="flex">
-            <section className="flex flex-col items-center bg-amber-300 h-dvh w-3/5">
+            <section className="md:flex flex-col hidden items-center bg-amber-300 h-dvh w-3/5">
                 <h1 className="mt-56 text-7xl text-white">Bem vindo!</h1>
                 <h2 className="text-2xl mt-3 text-gray-100">Venha escolher os melhores imoveis da sua região</h2>
             </section>
 
-            <section className="flex flex-col justify-center h-dvh w-2/5">
+            <section className="flex flex-col justify-center h-dvh md:w-2/5 sm:w-full">
                 <h1 className="mx-auto text-5xl text-amber-300 font-bold">Login</h1>
                 <form className="px-28 py-10 flex flex-col gap-8" onSubmit={handleSubmit(verificaLogin)}>
                     <div className="flex flex-col">

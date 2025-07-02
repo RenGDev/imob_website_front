@@ -1,67 +1,84 @@
 import { ImovelItf } from "@/utils/types/ImovelItf";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import "flowbite"
 
 type Inputs = {
-    termo: string
-}
+    termo: string;
+};
 
 type InputPesquisaProps = {
-    setImoveis: React.Dispatch<React.SetStateAction<ImovelItf[]>>
-}
+    setImoveis: React.Dispatch<React.SetStateAction<ImovelItf[]>>;
+};
 
 export function InputPesquisa({ setImoveis }: InputPesquisaProps) {
-    const { register, handleSubmit, reset, setFocus } = useForm<Inputs>()
+    const { register, handleSubmit, reset, setFocus } = useForm<Inputs>();
 
     async function enviaPesquisa(data: Inputs) {
-        // alert(data.termo)
-        if (data.termo.length < 2) {
-            toast.error("Informe, no mínimo, 2 caracteres")
-            return
+        const termoLimpo = data.termo.trim();
+
+        if (termoLimpo.length < 2) {
+            toast.error("Digite pelo menos 2 letras para pesquisar.");
+            setFocus("termo");
+            return;
         }
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/imoveis/pesq?type=${data.termo}`)
-        const dados = await response.json()
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/imoveis/pesq?type=${termoLimpo}`);
+            const dados = await response.json();
 
-        if (dados.length == 0) {
-            toast.error("Não há veículos para a pesquisa informada")
-            setFocus("termo")
-            reset({ termo: "" })
-            return
+            if (!dados || dados.length === 0) {
+                toast.error("Nenhum imóvel encontrado para o tipo informado.");
+                reset({ termo: "" });
+                setFocus("termo");
+                return;
+            }
+
+            setImoveis(dados);
+        } catch (error) {
+            console.error("Erro na pesquisa:", error);
+            toast.error("Erro ao realizar a pesquisa.");
         }
-
-        // console.log(dados)
-        setImoveis(dados)
     }
 
     async function mostraDestaques() {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/imoveis/list`)
-        const dados = await response.json()
-        reset({ termo: "" })
-        setImoveis(dados)
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/imoveis/list`);
+            const dados = await response.json();
+            reset({ termo: "" });
+            setImoveis(dados);
+        } catch (error) {
+            console.error("Erro ao buscar imóveis:", error);
+            toast.error("Erro ao buscar todos os imóveis.");
+        }
     }
 
     return (
-        <div className="flex mt-5 mb-10">
-            <form className="flex-1" onSubmit={handleSubmit(enviaPesquisa)}>
-                <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-                <div className="relative ml-10 md:ml-0">
-                    <input type="search" id="default-search" className="block w-3xl p-4 ps-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-amber-500 focus:border-amber-500"
-                        placeholder="Tipo de residencia" required
-                        {...register("termo")}
-                        onKeyDown={(e) => {
-                            if (e.key == 'enter'){
-                                handleSubmit(enviaPesquisa)
-                            }}}
-                    />
-                    <button type="button"
-                        className="cursor-pointer text-white absolute end-14 md:end-13 bottom-2.5 bg-amber-400 hover:bg-amber-500 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2"
-                        onClick={mostraDestaques}>
+        <form onSubmit={handleSubmit(enviaPesquisa)} className="w-full mb-7 flex px-4">
+            <div className="relative w-full max-w-3xl">
+                <input
+                    type="search"
+                    id="pesquisa"
+                    className="block w-full p-4 pl-5 pr-32 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-amber-500 focus:border-amber-500"
+                    placeholder="Digite o tipo do imóvel (ex: Casa, Apartamento...)"
+                    {...register("termo")}
+                    aria-label="Campo de pesquisa por tipo de imóvel"
+                />
+                <div className="absolute right-2 bottom-2 flex gap-2">
+                    <button
+                        type="submit"
+                        className="px-4 py-2 text-sm font-medium text-white bg-amber-400 hover:bg-amber-500 rounded-lg"
+                    >
+                        Pesquisar
+                    </button>
+                    <button
+                        type="button"
+                        className="px-4 py-2 text-sm font-medium text-white bg-gray-400 hover:bg-gray-500 rounded-lg"
+                        onClick={mostraDestaques}
+                    >
                         Todos
                     </button>
                 </div>
-            </form>
-        </div>
-    )
+            </div>
+        </form>
+    );
 }

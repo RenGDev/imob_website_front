@@ -2,104 +2,139 @@
 import { useAuthStore } from "@/context/UserContext"
 import { PropostaItf } from "@/utils/types/PropostasItf"
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
+import LoadingSpinner from "@/components/LoadingSpinner" // Adicione um componente de loading
 
-export default function Propostas(){
-
+export default function Propostas() {
     const [propostas, setPropostas] = useState<PropostaItf[]>([])
+    const [loading, setLoading] = useState(true)
     const { user, token } = useAuthStore()
 
     useEffect(() => {
         async function buscaDados() {
-          if (user?.id) {
+            if (!user?.id) return
+            
+            setLoading(true)
             try {
-              const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/user_imovel/list/${user.id}`);
-              const dados = await response.json();
-              setPropostas(dados);
-              console.log(dados)
+                const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/user_imovel/list/${user.id}`, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                })
+                
+                if (!response.ok) {
+                    throw new Error("Falha ao carregar propostas")
+                }
+                
+                const dados = await response.json()
+                setPropostas(dados)
             } catch (err) {
-              console.error("Erro ao buscar propostas:", err);
+                console.error("Erro ao buscar propostas:", err)
+                toast.error("Não foi possível carregar suas propostas")
+            } finally {
+                setLoading(false)
             }
-          }
         }
 
-        buscaDados();
-        
-    }, [user?.id]);
+        buscaDados()
+    }, [user?.id, token])
 
     async function deleteProposta(userId: number, imovelId: number) {
+        const confirm = window.confirm("Tem certeza que deseja cancelar esta proposta?")
+        if (!confirm) return
+        
         try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/user_imovel/delete/${userId}/${imovelId}`, {
-            method: "DELETE",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-            },
-          });
-      
-          if (!response.ok) throw new Error("Erro ao deletar");
-      
-          setPropostas(prev => prev.filter(p => p.id.userId !== userId || p.id.imovelId !== imovelId));
+            const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/user_imovel/delete/${userId}/${imovelId}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            })
+        
+            if (!response.ok) throw new Error("Erro ao deletar proposta")
+            
+            setPropostas(prev => prev.filter(p => p.id.userId !== userId || p.id.imovelId !== imovelId))
+            toast.success("Proposta cancelada com sucesso")
         } catch (err) {
-          console.error("Erro ao deletar proposta:", err);
+            console.error("Erro ao deletar proposta:", err)
+            toast.error("Falha ao cancelar proposta")
         }
     }
 
-    const table = propostas.map(proposta => (
-         <tr key={`${proposta.id.userId}-${proposta.id.imovelId}`} className="bg-amber-300 text-shadow-2xs border-b border-gray-200">
-            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                {proposta.imoveis.description}
-            </th>
-            <td className="px-6 py-4">
-                {proposta.imoveis.type}
-            </td>
-            <td className="px-6 py-4">
-                {proposta.imoveis.priceType}
-            </td>
-            {proposta.imoveis.priceType == "Aluguel" ?
-                <td className="px-6 py-4">
-                  {Number(proposta.imoveis.price).toLocaleString("pt-br", { minimumFractionDigits: 2 })} $RS/mes
-                </td>
+    const formatPrice = (price: number, priceType: string) => {
+        return priceType === "Aluguel" 
+            ? `${price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}/mês`
+            : price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+    }
 
-                :
-                
-                <td className="px-6 py-4">
-                  {Number(proposta.imoveis.price).toLocaleString("pt-br", { minimumFractionDigits: 2 })} $RS
-                </td>
-            }
-            <td className="px-6 py-4">
-                <button onClick={()=> deleteProposta(proposta.id.userId, proposta.id.imovelId)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Delete</button>
-            </td>
-        </tr>          
-    ))
-
-    return(
-        <main className="flex flex-col gap-5">
-            <h1 className="m-auto mt-8 text-3xl">Suas propostas</h1>
-            <div className="relative overflow-x-auto sm:rounded-lg p-5">
-                <table className="w-full shadow-md text-sm text-left rtl:text-right border-2 border-purple-500 text-gray-500 rounded-md">
-                    <thead className="text-xs text-gray-700 uppercase bg-purple-500">
-                        <tr>
-                            <th scope="col" className="px-6 py-3">
-                                Descrição
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Tipo
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Precificação
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Price
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Action
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {table}     
-                    </tbody>
-                </table>
-            </div>
+    return (
+        <main className="container mx-auto px-4 py-8">
+            <h1 className="text-3xl font-bold text-center mb-8 text-purple-700">Suas Propostas</h1>
+            
+            {loading ? (
+                <div className="flex justify-center items-center h-64">
+                    <LoadingSpinner />
+                </div>
+            ) : propostas.length === 0 ? (
+                <div className="text-center py-12">
+                    <p className="text-xl text-gray-600">Você ainda não fez nenhuma proposta</p>
+                    <p className="text-gray-500 mt-2">Encontre imóveis e envie suas propostas</p>
+                </div>
+            ) : (
+                <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-purple-600 text-white">
+                                <tr>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                                        Imóvel
+                                    </th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                                        Tipo
+                                    </th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                                        Tipo de Negócio
+                                    </th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                                        Valor
+                                    </th>
+                                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider">
+                                        Ações
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {propostas.map(proposta => (
+                                    <tr key={`${proposta.id.userId}-${proposta.id.imovelId}`} className="hover:bg-amber-50 transition-colors">
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="font-medium text-gray-900">{proposta.imoveis.description}</div>
+                                            <div className="text-sm text-gray-500">{proposta.imoveis.address}</div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {proposta.imoveis.type}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {proposta.imoveis.priceType}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            {formatPrice(proposta.imoveis.price, proposta.imoveis.priceType)}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <button 
+                                                onClick={() => deleteProposta(proposta.id.userId, proposta.id.imovelId)}
+                                                className="text-red-600 hover:text-red-900 mr-4 transition-colors"
+                                                title="Cancelar proposta"
+                                            >
+                                                Cancelar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            )}
         </main>
     )
 }
