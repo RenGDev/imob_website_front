@@ -17,7 +17,6 @@ export default function Login() {
     const router = useRouter()
 
     async function verificaLogin(data: Inputs) {
-        // alert(`${data.email} ${data.senha} ${data.manter}`)
         const response = await 
           fetch(`${process.env.NEXT_PUBLIC_URL_API}/auth/login`, {
             headers: {"Content-Type": "application/json"},
@@ -26,30 +25,21 @@ export default function Login() {
             body: JSON.stringify({ email: data.email, password: data.password })
           })
         
-        // console.log(response)
-        if (response.status == 200) {
-            // toast.success("Ok!")            
+        if (response.status == 200) {         
             const {user, token} = await response.json()
 
-
-            // "coloca" os dados do cliente no contexto
             signIn(user, token)
 
             console.log(user)
-            
-            // se o cliente indicou que quer se manter conectado
-            // salvamos os dados (id) dele em localStorage
+
             if (data.manter) {
                 localStorage.setItem("clienteKey", user.id)
             } else {
-                // se indicou que não quer permanecer logado e tem
-                // uma chave (anteriormente) salva, remove-a
                 if (localStorage.getItem("clienteKey")) {
                     localStorage.removeItem("clienteKey")
                 }
             }
 
-            // carrega a página principal, após login do cliente
             router.push("/")
         } else {
             toast.error("Erro... Login ou senha incorretos")
@@ -95,7 +85,7 @@ export default function Login() {
                             </div>
                             <a href="/password-recovery" className="text-sm font-medium text-black hover:underline dark:text-black">Esqueceu sua senha?</a>
                     </div>
-                    <button type="submit" className="w-full text-white focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-amber-600 hover:bg-amber-700 dark:focus:ring-blue-800">
+                    <button type="submit" className="w-full cursor-pointer text-white focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-amber-600 hover:bg-amber-700 dark:focus:ring-blue-800">
                         Entrar
                     </button>
                     <p className="text-sm font-light text-black">

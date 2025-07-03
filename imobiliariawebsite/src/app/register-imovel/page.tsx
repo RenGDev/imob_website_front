@@ -1,6 +1,5 @@
 'use client'
 import { useAuthStore } from "@/context/UserContext"
-import { main } from "flowbite-react/cli/main"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -47,7 +46,6 @@ export default function Register_Imovel() {
                     <div className="flex flex-col gap-6 bg-amber-400 p-6 rounded-md w-full max-w-4xl mx-4">
                         <h1 className="text-center text-purple-600 text-2xl font-bold">Cadastre seu imóvel</h1>
                         <form className="flex flex-col gap-4 text-purple-600" onSubmit={handleSubmit(registrar)}>
-                            {/* Linha 1 - Descrição e Endereço */}
                             <div className="flex flex-col md:flex-row gap-4">
                                 <div className="flex-1 flex flex-col gap-1">
                                     <label className="text-sm font-medium" htmlFor="description">Descrição</label>

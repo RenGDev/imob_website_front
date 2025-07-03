@@ -23,7 +23,7 @@ export default function Home() {
 
         async function searchUser(id: string) {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/users/list/${id}`)
+                const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/users/list/id/${id}`)
                 if (!response.ok) throw new Error("Erro ao carregar usuário")
                 const dados = await response.json()
                 Logged(dados)
@@ -43,11 +43,11 @@ export default function Home() {
     // Pegar apenas os 3 primeiros imóveis de cada tipo
     const imoveisVenda = imoveis
         .filter(imovel => imovel.priceType === "Venda")
-        .slice(0, 3) // Limita a 3 imóveis
+        .slice(0, 3)
 
     const imoveisAluguel = imoveis
         .filter(imovel => imovel.priceType === "Aluguel")
-        .slice(0, 3) // Limita a 3 imóveis
+        .slice(0, 3) 
 
     const listImovelVenda = imoveisVenda.map(imovel => (
         <CardImovel key={imovel.id} data={imovel} />

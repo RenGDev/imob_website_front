@@ -74,7 +74,7 @@ export default function Register() {
 
           <button
             type="submit"
-            className="md:w-full w-3/4 m-auto md:m-0 bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+            className="md:w-full w-3/4 m-auto md:m-0 cursor-pointer bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center"
           >
             Registrar
           </button>
