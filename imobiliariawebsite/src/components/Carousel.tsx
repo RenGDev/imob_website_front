@@ -50,7 +50,7 @@ export function Carousel({ imovel }: { imovel: ImovelItf }) {
         <div key={photo.id} className="relative group">
             <button
                 onClick={() => setSelectedPhoto(photo)}
-                className={`border-2 rounded-lg cursor-pointer transition-all duration-300 overflow-hidden w-full h-full ${
+                className={`border-2 rounded-lg cursor-pointer overflow-hidden w-full h-full ${
                     selectedPhoto?.id === photo.id ? 'border-amber-400' : 'border-transparent'
                 }`}
             >
@@ -83,7 +83,7 @@ export function Carousel({ imovel }: { imovel: ImovelItf }) {
         <div className="flex flex-col gap-4 md:flex-row">
             <div>
                 <img 
-                    className="h-96 transition-all max-w-full rounded-lg" 
+                    className="h-96  max-w-full rounded-lg" 
                     src={selectedPhoto?.url || "/no_image.jpg"} 
                     alt={selectedPhoto?.description || "Imagem"} 
                 />
