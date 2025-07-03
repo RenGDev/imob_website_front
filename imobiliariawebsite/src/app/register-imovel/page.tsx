@@ -18,158 +18,253 @@ type Inputs = {
 
 export default function Register_Imovel() {
     const { user, token } = useAuthStore()
-    const { register, handleSubmit, reset } = useForm<Inputs>()
+    const { register, handleSubmit, reset, formState: { errors } } = useForm<Inputs>()
     const router = useRouter()
     
     async function registrar(data: Inputs) {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/imoveis/register`, {
-            headers: { 
-                "Content-Type": "application/json",  
-                "Authorization": `Bearer ${token}`
-            },
-            method: "POST",
-            body: JSON.stringify(data),
-        })
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/imoveis/register`, {
+                headers: { 
+                    "Content-Type": "application/json",  
+                    "Authorization": `Bearer ${token}`
+                },
+                method: "POST",
+                body: JSON.stringify(data),
+            })
 
-        if (response.status == 200) {
-            toast.success("Imóvel registrado com sucesso")
-            reset()
-        } else {
-            toast.error("Erro... Não foi possível realizar o cadastro")
+            if (response.status == 200) {
+                toast.success("Imóvel registrado com sucesso!")
+                reset()
+            } else {
+                const errorData = await response.json()
+                toast.error(errorData.message || "Erro ao cadastrar imóvel")
+            }
+        } catch (error) {
+            toast.error("Erro de conexão com o servidor")
         }
     }
 
     return (
-        <main>  
+        <main className="min-h-screen bg-gradient-to-br from-amber-50 to-amber-100 py-12 px-4 sm:px-6 lg:px-8">  
             {user ? (
-                <main className="flex items-center justify-center bg-amber-300 w-full min-h-dvh py-8 px-4">
-                    <div className="flex flex-col gap-6 bg-amber-400 p-6 rounded-md w-full max-w-4xl mx-4">
-                        <h1 className="text-center text-purple-600 text-2xl font-bold">Cadastre seu imóvel</h1>
-                        <form className="flex flex-col gap-4 text-purple-600" onSubmit={handleSubmit(registrar)}>
-                            <div className="flex flex-col md:flex-row gap-4">
-                                <div className="flex-1 flex flex-col gap-1">
-                                    <label className="text-sm font-medium" htmlFor="description">Descrição</label>
-                                    <input 
-                                        className="w-full rounded-md p-2 border border-amber-500 focus:ring-2 focus:ring-purple-600 focus:border-transparent" 
-                                        type="text" 
-                                        id="input_description" 
-                                        required 
-                                        {...register("description")}
-                                    />
-                                </div>
-                                <div className="flex-1 flex flex-col gap-1">
-                                    <label className="text-sm font-medium" htmlFor="address">Endereço (Cidade/Endereço)</label>
-                                    <input 
-                                        className="w-full rounded-md p-2 border border-amber-500 focus:ring-2 focus:ring-purple-600 focus:border-transparent" 
-                                        type="text" 
-                                        id="input_address" 
-                                        required 
-                                        {...register("address")}
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Linha 2 - Tipo e Tipo de Preço */}
-                            <div className="flex flex-col md:flex-row gap-4">
-                                <div className="flex-1 flex flex-col gap-1">
-                                    <label className="text-sm font-medium" htmlFor="type">Tipo de imóvel (Apartamento/Casa/Kitnet)</label>
-                                    <input 
-                                        className="w-full rounded-md p-2 border border-amber-500 focus:ring-2 focus:ring-purple-600 focus:border-transparent" 
-                                        type="text" 
-                                        id="input_type" 
-                                        required 
-                                        {...register("type")}
-                                    />
-                                </div>
-                                <div className="flex-1 flex flex-col gap-1">
-                                    <label className="text-sm font-medium" htmlFor="priceType">Precificação do imóvel (Aluguel/Venda)</label>
-                                    <input 
-                                        className="w-full rounded-md p-2 border border-amber-500 focus:ring-2 focus:ring-purple-600 focus:border-transparent" 
-                                        type="text"  
-                                        id="input_priceType" 
-                                        required 
-                                        {...register("priceType")}
-                                    />
+                <div className="max-w-5xl mx-auto">
+                    <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+                        <div className="md:flex">
+                            {/* Sidebar ilustrativa */}
+                            <div className="hidden md:block md:w-1/3 bg-gradient-to-b from-purple-600 to-amber-500 p-8 text-white">
+                                <div className="h-full flex flex-col justify-between">
+                                    <div>
+                                        <h2 className="text-2xl font-bold mb-2">Cadastre seu imóvel</h2>
+                                        <p className="text-purple-100 opacity-90">
+                                            Preencha os detalhes do seu imóvel para começar a atrair compradores ou locatários.
+                                        </p>
+                                    </div>
+                                    <div className="mt-8">
+                                        <div className="flex items-center mb-4">
+                                            <div className="w-8 h-8 rounded-full bg-white text-purple-600 flex items-center justify-center font-bold mr-3">1</div>
+                                            <span>Informações básicas</span>
+                                        </div>
+                                        <div className="flex items-center mb-4">
+                                            <div className="w-8 h-8 rounded-full bg-white text-purple-600 flex items-center justify-center font-bold mr-3">2</div>
+                                            <span>Detalhes do imóvel</span>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <div className="w-8 h-8 rounded-full bg-white text-purple-600 flex items-center justify-center font-bold mr-3">3</div>
+                                            <span>Valores e finalização</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-
-                            {/* Linha 3 - Preço e Quartos */}
-                            <div className="flex flex-col md:flex-row gap-4">
-                                <div className="flex-1 flex flex-col gap-1">
-                                    <label className="text-sm font-medium" htmlFor="price">Preço</label>
-                                    <input 
-                                        className="w-full rounded-md p-2 border border-amber-500 focus:ring-2 focus:ring-purple-600 focus:border-transparent" 
-                                        type="number" 
-                                        id="input_price" 
-                                        required 
-                                        {...register("price")}
-                                    />
+                            
+                            {/* Formulário */}
+                            <div className="md:w-2/3 p-8">
+                                <div className="md:hidden mb-6">
+                                    <h1 className="text-2xl font-bold text-purple-700">Cadastre seu imóvel</h1>
+                                    <p className="text-gray-600 mt-2">Preencha todos os campos obrigatórios</p>
                                 </div>
-                                <div className="flex-1 flex flex-col gap-1">
-                                    <label className="text-sm font-medium" htmlFor="bedRooms">Quantidade de Quartos</label>
-                                    <input 
-                                        className="w-full rounded-md p-2 border border-amber-500 focus:ring-2 focus:ring-purple-600 focus:border-transparent" 
-                                        type="number" 
-                                        id="input_bedRooms" 
-                                        required 
-                                        {...register("bedRooms")}
-                                    />
-                                </div>
+                                
+                                <form onSubmit={handleSubmit(registrar)} className="space-y-6">
+                                    <div>
+                                        <h3 className="text-lg font-medium text-purple-700 mb-4 border-b pb-2">Informações básicas</h3>
+                                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                                            <div>
+                                                <label htmlFor="description" className="block text-sm font-medium text-gray-700">Descrição*</label>
+                                                <textarea
+                                                    id="description"
+                                                    rows={3}
+                                                    className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 ${errors.description ? 'border-red-500' : 'border'}`}
+                                                    {...register("description", { required: true })}
+                                                />
+                                                {errors.description && <p className="mt-1 text-sm text-red-600">Este campo é obrigatório</p>}
+                                            </div>
+                                            
+                                            <div>
+                                                <label htmlFor="address" className="block text-sm font-medium text-gray-700">Endereço completo*</label>
+                                                <input
+                                                    type="text"
+                                                    id="address"
+                                                    className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 ${errors.address ? 'border-red-500' : 'border'}`}
+                                                    {...register("address", { required: true })}
+                                                />
+                                                {errors.address && <p className="mt-1 text-sm text-red-600">Este campo é obrigatório</p>}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h3 className="text-lg font-medium text-purple-700 mb-4 border-b pb-2">Tipo e preço</h3>
+                                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                                            <div>
+                                                <label htmlFor="type" className="block text-sm font-medium text-gray-700">Tipo de imóvel*</label>
+                                                <select
+                                                    id="type"
+                                                    className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 ${errors.type ? 'border-red-500' : 'border'}`}
+                                                    {...register("type", { required: true })}
+                                                >
+                                                    <option value="">Selecione...</option>
+                                                    <option value="Apartamento">Apartamento</option>
+                                                    <option value="Casa">Casa</option>
+                                                    <option value="Kitnet">Kitnet</option>
+                                                    <option value="Sobrado">Cobertura</option>
+                                                </select>
+                                                {errors.type && <p className="mt-1 text-sm text-red-600">Este campo é obrigatório</p>}
+                                            </div>
+                                            
+                                            <div>
+                                                <label htmlFor="priceType" className="block text-sm font-medium text-gray-700">Tipo de negócio*</label>
+                                                <select
+                                                    id="priceType"
+                                                    className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 ${errors.priceType ? 'border-red-500' : 'border'}`}
+                                                    {...register("priceType", { required: true })}
+                                                >
+                                                    <option value="">Selecione...</option>
+                                                    <option value="Aluguel">Aluguel</option>
+                                                    <option value="Venda">Venda</option>
+                                                </select>
+                                                {errors.priceType && <p className="mt-1 text-sm text-red-600">Este campo é obrigatório</p>}
+                                            </div>
+                                            
+                                            <div>
+                                                <label htmlFor="price" className="block text-sm font-medium text-gray-700">Preço*</label>
+                                                <div className="mt-1 relative rounded-md shadow-sm">
+                                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                        <span className="text-gray-500 sm:text-sm">R$</span>
+                                                    </div>
+                                                    <input
+                                                        type="number"
+                                                        id="price"
+                                                        step="0.01"
+                                                        min="0"
+                                                        className={`block w-full pl-10 pr-12 rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 ${errors.price ? 'border-red-500' : 'border'}`}
+                                                        {...register("price", { required: true, min: 0 })}
+                                                    />
+                                                </div>
+                                                {errors.price && <p className="mt-1 text-sm text-red-600">Valor inválido</p>}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h3 className="text-lg font-medium text-purple-700 mb-4 border-b pb-2">Detalhes do imóvel</h3>
+                                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                                            <div>
+                                                <label htmlFor="bedRooms" className="block text-sm font-medium text-gray-700">Quartos*</label>
+                                                <input
+                                                    type="number"
+                                                    id="bedRooms"
+                                                    min="0"
+                                                    className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 ${errors.bedRooms ? 'border-red-500' : 'border'}`}
+                                                    {...register("bedRooms", { required: true, min: 0 })}
+                                                />
+                                                {errors.bedRooms && <p className="mt-1 text-sm text-red-600">Valor inválido</p>}
+                                            </div>
+                                            
+                                            <div>
+                                                <label htmlFor="bathRooms" className="block text-sm font-medium text-gray-700">Banheiros*</label>
+                                                <input
+                                                    type="number"
+                                                    id="bathRooms"
+                                                    min="0"
+                                                    className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 ${errors.bathRooms ? 'border-red-500' : 'border'}`}
+                                                    {...register("bathRooms", { required: true, min: 0 })}
+                                                />
+                                                {errors.bathRooms && <p className="mt-1 text-sm text-red-600">Valor inválido</p>}
+                                            </div>
+                                            
+                                            <div>
+                                                <label htmlFor="parkingSpace" className="block text-sm font-medium text-gray-700">Vagas de garagem*</label>
+                                                <input
+                                                    type="number"
+                                                    id="parkingSpace"
+                                                    min="0"
+                                                    className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 ${errors.parkingSpace ? 'border-red-500' : 'border'}`}
+                                                    {...register("parkingSpace", { required: true, min: 0 })}
+                                                />
+                                                {errors.parkingSpace && <p className="mt-1 text-sm text-red-600">Valor inválido</p>}
+                                            </div>
+                                            
+                                            <div>
+                                                <label htmlFor="size" className="block text-sm font-medium text-gray-700">Área (m²)*</label>
+                                                <div className="mt-1 relative rounded-md shadow-sm">
+                                                    <input
+                                                        type="number"
+                                                        id="size"
+                                                        min="0"
+                                                        step="0.01"
+                                                        className={`block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 ${errors.size ? 'border-red-500' : 'border'}`}
+                                                        {...register("size", { required: true, min: 0 })}
+                                                    />
+                                                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                                        <span className="text-gray-500 sm:text-sm">m²</span>
+                                                    </div>
+                                                </div>
+                                                {errors.size && <p className="mt-1 text-sm text-red-600">Valor inválido</p>}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="flex justify-end space-x-4 pt-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => reset()}
+                                            className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                                        >
+                                            Limpar
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200"
+                                        >
+                                            Cadastrar Imóvel
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
-
-                            {/* Linha 4 - Banheiros e Vagas */}
-                            <div className="flex flex-col md:flex-row gap-4">
-                                <div className="flex-1 flex flex-col gap-1">
-                                    <label className="text-sm font-medium" htmlFor="bathRooms">Quantidade de Banheiros</label>
-                                    <input 
-                                        className="w-full rounded-md p-2 border border-amber-500 focus:ring-2 focus:ring-purple-600 focus:border-transparent" 
-                                        type="number" 
-                                        id="input_bathRooms" 
-                                        required 
-                                        {...register("bathRooms")}
-                                    />
-                                </div>
-                                <div className="flex-1 flex flex-col gap-1">
-                                    <label className="text-sm font-medium" htmlFor="parkingSpace">Quantidade de Vagas</label>
-                                    <input 
-                                        className="w-full rounded-md p-2 border border-amber-500 focus:ring-2 focus:ring-purple-600 focus:border-transparent" 
-                                        type="number" 
-                                        id="input_parkingSpace" 
-                                        required 
-                                        {...register("parkingSpace")}
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Linha 5 - Tamanho */}
-                            <div className="flex flex-col gap-1">
-                                <label className="text-sm font-medium" htmlFor="size">Tamanho (m²)</label>
-                                <input 
-                                    className="w-2/4 rounded-md p-2 border border-amber-500 focus:ring-2 focus:ring-purple-600 focus:border-transparent" 
-                                    type="number" 
-                                    id="input_size" 
-                                    required 
-                                    {...register("size")}
-                                />
-                            </div>
-
-                            <button
-                                type="submit"
-                                className="w-full bg-amber-600 mt-2 hover:bg-amber-700 text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-colors duration-200"
-                            >
-                                Cadastrar
-                            </button>
-                        </form>
+                        </div>
                     </div>
-                </main>
+                </div>
             ) : (
-                <main className="flex items-center justify-center min-h-dvh bg-amber-300 p-4">
-                    <div className="bg-amber-400 p-6 rounded-md text-center">
-                        <p className="text-purple-600 font-medium">
-                            Faça login para cadastrar um imóvel
+                <div className="max-w-md mx-auto">
+                    <div className="bg-white p-8 rounded-2xl shadow-lg text-center">
+                        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-purple-100">
+                            <svg className="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                        </div>
+                        <h2 className="mt-3 text-lg font-medium text-gray-900">Acesso restrito</h2>
+                        <p className="mt-2 text-sm text-gray-500">
+                            Você precisa estar logado para cadastrar um imóvel.
                         </p>
+                        <div className="mt-6">
+                            <button
+                                onClick={() => router.push('/login')}
+                                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                            >
+                                Fazer login
+                            </button>
+                        </div>
                     </div>
-                </main>
+                </div>
             )}
         </main>
     )
